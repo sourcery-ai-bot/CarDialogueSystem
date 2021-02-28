@@ -18,7 +18,7 @@ che_lun_zhi_dong = ['前轮胎规格', '后轮胎规格']
 fa_dong_ji = [ '排量(L)', '进气形式', '气缸排列形式', '气缸数(个)', '每缸气门数(个)', '压缩比', '配气机构', '缸径(mm)',
                '行程(mm)', '最大马力(Ps)', '最大功率(kW)', '最大功率转速(rpm)', '最大扭矩(N·m)', '最大扭矩转速(rpm)',
                '燃料形式', '燃油标号', '供油方式', '缸盖材料', '缸体材料', '环保标准']
-
+# 文件名mapping
 filenames_mapping = {'车系1':'che_xi', '车型':'che_xing', '基本参数':'base_parameters', '车身':'car_body', '变速箱':'bian_su_xiang',
                      '底盘转向':'di_pan_zhuan_xiang', '车轮制动':'che_lun_zhi_dong', '发动机':'fa_dong_ji'}
 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
         result['id:ID'] = [i for i in range(current_index, current_index + len(temp))]
         current_index += len(temp)
         # to csv
-        result.to_csv('./data/entities/' + filenames_mapping[node] + '.csv', encoding='utf_8_sig', index=False)
+        result.to_csv('./data/entities/' + filenames_mapping[node] + '.csv', encoding='utf-8', index=False)
 
     che_xi = pd.read_csv('./data/entities/che_xi.csv')
     che_xing = pd.read_csv('./data/entities/che_xing.csv')
@@ -54,11 +54,10 @@ if __name__ == '__main__':
     relationship[':START_ID'] = data['车系1'].map(che_xi_mapping)
     relationship['LINK'] = ['包含' for i in range(len(che_xing))]
     # 保存关系
-    relationship.to_csv('./data/relationships/chexi2chexing.csv', encoding='utf_8_sig', index=False)
+    relationship.to_csv('./data/relationships/chexi2chexing.csv', encoding='utf-8', index=False)
 
     # other nodes
     schemas = zip(nodes[2:], [base_parameters, car_body, bian_su_xiang, di_pan_zhuan_xiang, che_lun_zhi_dong, fa_dong_ji])
-
 
     for k, v in schemas:
         # 配置 节点
@@ -81,20 +80,20 @@ if __name__ == '__main__':
 
         # 生成结果 result要删掉 车型列
         result.drop(columns='车型', inplace=True)
-        result.to_csv('./data/entities/' + filenames_mapping[k] + '.csv', encoding='utf_8_sig', index=False)
-        relationship.to_csv('./data/relationships/che_xing2' + filenames_mapping[k] + '.csv', encoding='utf_8_sig', index=False)
+        result.to_csv('./data/entities/' + filenames_mapping[k] + '.csv', encoding='utf-8', index=False)
+        relationship.to_csv('./data/relationships/che_xing2' + filenames_mapping[k] + '.csv', encoding='utf-8', index=False)
 
     # 品牌 节点
     result = pd.DataFrame(columns=['id:ID', 'name'])
     result['id:ID'] = [current_index]
     result['name'] = ['上汽大通']
-    result.to_csv('./data/entities/brand.csv', encoding='utf_8_sig', index=False)
+    result.to_csv('./data/entities/brand.csv', encoding='utf-8', index=False)
     # 大通 和 车系 的关系, 一个车系对应一个品牌
     relationship = pd.DataFrame(columns=[':START_ID', ':END_ID', 'LINK'])
     relationship[':START_ID'] = [current_index for i in range(len(che_xi))]
     relationship[':END_ID'] = che_xi['id:ID']
     relationship['LINK'] = ['包含' for i in range(len(che_xi))]
-    relationship.to_csv('./data/relationships/datong2chexi.csv', encoding='utf_8_sig', index=False)
+    relationship.to_csv('./data/relationships/datong2chexi.csv', encoding='utf-8', index=False)
 
 
 

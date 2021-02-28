@@ -9,10 +9,10 @@ from py2neo.matching import \
 import pandas as pd
 
 
-graph = Graph('http://localhost:7474', username='neo4j', password='12345')
+graph = Graph('http://localhost:7474', username='neo4j', password='123456')
 graphMather = RelationshipMatcher(graph=graph)
 
-data = pd.read_excel('test3.xlsx',index_col=0)
+data = pd.read_excel('./data/test3.xlsx',index_col=0)
 
 for index in data.index:
     content = data.loc[index].dropna()
