@@ -56,10 +56,10 @@ class GraphDatabase(KnowledgeBase):
                      attributes:Optional[List[Dict[Text,Text]]] = None,
                      limit: int =10
                      ):
-        if entity_type == None and attributes == None:
+        if entity_type is None and attributes is None:
             raise Exception('GraphDatabase类:get_entities函数:实体类型和属性都没提供，报错')
 
-        if attributes == None:
+        if attributes is None:
             nodes = self.graph.nodes.match(entity_type).limit(limit).all()
         else:
             attributes1 = attributes[0]
@@ -67,22 +67,19 @@ class GraphDatabase(KnowledgeBase):
             if 'id' in attributes1:
                 id = attributes1['id']
                 attributes1.pop('id')
-            if id == None:
+            if id is None:
                 nodes = self.graph.nodes.match(entity_type,**attributes1).limit(limit).all()
             else:
                 nodes = self.graph.nodes.match(entity_type, **attributes1).where('id(_)='+str(id)).limit(limit).all()
 
-        if nodes == None:
+        if nodes is None:
             print('没有查询到实体')
             return None
-        nodes2list = []
-        for node in nodes:
-            nodes2list.append(self._node_to_dict(node))
-        return nodes2list
+        return [self._node_to_dict(node) for node in nodes]
 
     def get_attr_value(self,aimed_attribute,entity_id,entity_name=None):
         # node_matcher = NodeMatcher(graph=self.graph)
-        if entity_name == None:
+        if entity_name is None:
             nodes = self.graph.nodes.match().where('id(_)=' + str(entity_id)).first()
         else:
             nodes = self.graph.nodes.match(name=entity_name).where('id(_)='+str(entity_id)).first()
@@ -91,7 +88,6 @@ class GraphDatabase(KnowledgeBase):
         if aimed_attribute in nodes_attr_dict.keys():
             return nodes_attr_dict[aimed_attribute]
         return False
-        pass
 
     def get_car_attr_value(self,aimed_attribute,
                            car_series_name = None,car_series_id = None,
